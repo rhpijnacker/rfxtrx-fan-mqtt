@@ -1,0 +1,2 @@
+pyRFXtrx
+paho-mqtt
