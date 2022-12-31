@@ -1,2 +1,2 @@
-pyRFXtrx
+git+https://github.com/rhpijnacker/pyRFXtrx@feature/itho-hru-fan#egg=pyRFXtrx
 paho-mqtt
