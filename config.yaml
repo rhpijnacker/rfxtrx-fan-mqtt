@@ -9,3 +9,15 @@ arch:
   - armhf
   - armv7
   - i386
+services:
+  - mqtt:need
+options:
+  rfxtrx_host: localhost
+  rfxtrx_port: 10001
+schema:
+  mqtt_host: str?
+  mqtt_port: port?
+  mqtt_user: str?
+  mqtt_passwd: str?
+  rfxtrx_host: str
+  rfxtrx_port: int
