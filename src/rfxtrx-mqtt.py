@@ -82,7 +82,11 @@ def send_rfxtrx_command(cmd):
         cmd
     )
     print(transport)
-    transport.send(pkt.data)
+    try:
+        transport.send(pkt.data)
+    except BrokenPipeError:
+        transport.reset()
+        transport.send(pkt.data)
 
 def send_mqtt_state(pct, preset, onoff):
     print(f"Publish {pct}, {preset}, {onoff}")
@@ -90,9 +94,6 @@ def send_mqtt_state(pct, preset, onoff):
     client.publish("rfxtrx/fan/74ea6d/percentage/state", pct, retain=True)
     client.publish("rfxtrx/fan/74ea6d/preset/state", preset, retain=True)
 
-
-transport = PyNetworkTransport((RFXTRX_HOST, RFXTRX_PORT))
-transport.reset()
 
 client = mqtt.Client("rfxtrx-fan-mqtt")
 client.on_connect = on_connect
@@ -123,6 +124,9 @@ config_payload = '''{
 client.publish("homeassistant/fan/rfxtrx_74ea6d/config", payload=config_payload, qos=1, retain=True)
 
 client.loop_start()
+
+transport = PyNetworkTransport((RFXTRX_HOST, RFXTRX_PORT))
+transport.reset()
 
 while True:
     event = transport.receive_blocking()
