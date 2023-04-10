@@ -3,9 +3,10 @@
 from RFXtrx import PyNetworkTransport, FanDevice
 from RFXtrx.lowlevel import Fan
 import paho.mqtt.client as mqtt
-import time
+import datetime
 import logging
 import traceback
+import sys
 
 from settings import *
 
@@ -15,8 +16,8 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("rfxtrx/#", 0)
 
 def on_message(client, userdata, msg):
-    try:    
-        print("RECIEVED MQTT MESSAGE: "+msg.topic + " " + str(msg.payload))
+    try:
+        print(timestamp() + "\tRECIEVED MQTT MESSAGE: " + msg.topic + " " + str(msg.payload))
 
         parts = msg.topic.split("/")
         if parts[-1] != "set":
@@ -40,6 +41,9 @@ def on_message(client, userdata, msg):
         traceback.print_exc()
         print("Error when parsing incomming message.")
 
+def timestamp():
+    return datetime().now().strftime("%Y-%m-%d %H:%M:%s")
+
 def convert_pct(value):
     if value == 0:
         return 0, 'low', 'OFF', Fan.Commands.LOW.value
@@ -57,7 +61,6 @@ def convert_preset(value):
         return 2, 'high', 'ON', Fan.Commands.HIGH.value
 
 def convert_onoff(value):
-    print(f"convert_onoff({value}) - {value == 'OFF'}")
     if value == "OFF":
         return 0, 'low', 'OFF', Fan.Commands.LOW.value
     else:
@@ -85,8 +88,8 @@ def send_rfxtrx_command(cmd):
     try:
         transport.send(pkt.data)
     except BrokenPipeError:
-        transport.reset()
-        transport.send(pkt.data)
+        print(timestamp() + "\tBrokenPipeError, exiting")
+        sys.exit()
 
 def send_mqtt_state(pct, preset, onoff):
     print(f"Publish {pct}, {preset}, {onoff}")
@@ -133,7 +136,7 @@ while True:
     if event == None or not isinstance(event.device, FanDevice):
         continue
 
-    print(event)
+    print(timestamp() + "\t" + event)
 
     pct, pr, stat = convert_cmnd(str(event.values['Command']))
     print(pct, pr, stat)
