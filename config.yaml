@@ -1,6 +1,6 @@
 name: "rfxtrx-fan-mqtt"
 description: "RFXtrx Fan to MQTT bridge"
-version: "0.0.3"
+version: "0.0.4"
 slug: "rfxtrx-fan-mqtt"
 init: false
 arch:

@@ -3,11 +3,11 @@
 from RFXtrx import PyNetworkTransport, FanDevice
 from RFXtrx.lowlevel import Fan
 import paho.mqtt.client as mqtt
-import datetime
 import logging
 import traceback
 import sys
 
+from datetime import datetime
 from settings import *
 
 logging.basicConfig(level=logging.DEBUG)
@@ -42,7 +42,7 @@ def on_message(client, userdata, msg):
         print("Error when parsing incomming message.")
 
 def timestamp():
-    return datetime().now().strftime("%Y-%m-%d %H:%M:%s")
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%s")
 
 def convert_pct(value):
     if value == 0:
