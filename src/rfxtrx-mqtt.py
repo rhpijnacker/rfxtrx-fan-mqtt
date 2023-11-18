@@ -136,7 +136,7 @@ while True:
     if event == None or not isinstance(event.device, FanDevice):
         continue
 
-    print(timestamp() + "\t" + event)
+    print(timestamp() + "\t" + str(event))
 
     pct, pr, stat = convert_cmnd(str(event.values['Command']))
     print(pct, pr, stat)
